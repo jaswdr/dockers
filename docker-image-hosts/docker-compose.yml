@@ -1,0 +1,46 @@
+version: '3.6'
+
+services:
+  client:
+    image: nginx
+    environment:
+      - VIRTUAL_HOST=domain.local
+
+  server:
+    image: nginx
+    environment:
+      - VIRTUAL_HOST=server.domain.local
+
+  db:
+    image: nginx
+    environment:
+      - VIRTUAL_HOST=db.domain.local
+
+  redis:
+    image: nginx
+    environment:
+      - VIRTUAL_HOST=redis.domain.local
+
+  elasticsearch:
+    image: nginx
+    environment:
+      - VIRTUAL_HOST=elasticsearch.domain.local
+
+  kibana:
+    image: nginx
+    environment:
+      - VIRTUAL_HOST=kibana.domain.local
+
+  hosts:
+    image: jaschweder/hosts
+    depends_on:
+      - client
+      - server
+      - db
+      - redis
+      - elasticsearch
+      - kibana
+    volumes:
+      - .:/usr/src/hosts
+      - /etc/hosts:/etc/hosts
+      - /var/run/docker.sock:/var/run/docker.sock

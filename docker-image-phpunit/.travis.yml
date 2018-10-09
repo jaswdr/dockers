@@ -1,0 +1,21 @@
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+env:
+  - IMAGE_FROM='php:5.4' IMAGE_TO=jaschweder/phpunit:5.4 XDEBUG_BRANCH=xdebug_2_4
+  - IMAGE_FROM='php:5.5' IMAGE_TO=jaschweder/phpunit:5.5 XDEBUG_BRANCH=xdebug_2_4
+  - IMAGE_FROM='php:5.6' IMAGE_TO=jaschweder/phpunit:5.6 XDEBUG_BRANCH=xdebug_2_4
+  - IMAGE_FROM='php:7.0' IMAGE_TO=jaschweder/phpunit:7.0 XDEBUG_BRANCH=xdebug_2_4
+  - IMAGE_FROM='php:7.1' IMAGE_TO=jaschweder/phpunit:7.1 XDEBUG_BRANCH=master
+
+script:
+  - sed -e "s/{IMAGE_FROM}/${IMAGE_FROM}/g" -e "s/{XDEBUG_BRANCH}/$XDEBUG_BRANCH/g" Dockerfile.txt > Dockerfile
+  - docker build -t $IMAGE_TO .
+
+after_success:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+  - docker push $IMAGE_TO;
